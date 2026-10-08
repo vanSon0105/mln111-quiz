@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ôn tập trắc nghiệm môn Triết học Mác - Lênin với 597 câu hỏi."
+    />
+    <meta name="theme-color" content="#17332c" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2317332c'/%3E%3Cpath d='M16 18h25a7 7 0 0 1 7 7v21H23a7 7 0 0 0-7 7V18Z' fill='%23fff'/%3E%3Cpath d='M23 14h25v32H23a7 7 0 0 0-7 7V21a7 7 0 0 1 7-7Z' fill='none' stroke='%23f4b942' stroke-width='4'/%3E%3C/svg%3E"
+    />
+    <title>MLN111 Quiz</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="questions.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="./" aria-label="MLN111 Quiz">
+          <span class="brand__mark" aria-hidden="true">M</span>
+          <span>
+            <strong>MLN111</strong>
+            <small>Triết học Mác - Lênin</small>
+          </span>
+        </a>
+
+        <div class="topbar__actions">
+          <label class="order-control" for="order-mode">
+            <span>Thứ tự</span>
+            <select id="order-mode">
+              <option value="shuffle">Ngẫu nhiên</option>
+              <option value="sequential">Theo file gốc</option>
+            </select>
+          </label>
+          <button class="icon-button" id="restart-button" type="button" title="Học lại từ đầu">
+            <span aria-hidden="true">↻</span>
+            <span class="sr-only">Học lại từ đầu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="study-status" aria-label="Tiến độ học tập">
+        <div class="progress-copy">
+          <span id="progress-label">Câu 1 / 597</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="scoreboard">
+          <div class="score-item">
+            <span class="score-item__label">Đúng</span>
+            <strong id="correct-count">0</strong>
+          </div>
+          <div class="score-item">
+            <span class="score-item__label">Sai</span>
+            <strong id="wrong-count">0</strong>
+          </div>
+          <div class="score-item">
+            <span class="score-item__label">Chuỗi đúng</span>
+            <strong id="streak-count">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="quiz-panel" id="quiz-panel" aria-labelledby="question-text">
+        <div class="question-meta">
+          <span id="question-number">Câu 1</span>
+          <span class="question-type" id="question-type">Chọn 1 đáp án</span>
+        </div>
+
+        <h1 id="question-text"></h1>
+        <div class="options" id="options"></div>
+
+        <div class="multi-actions" id="multi-actions" hidden>
+          <button class="primary-button" id="check-button" type="button" disabled>
+            Kiểm tra đáp án
+          </button>
+        </div>
+
+        <div class="feedback" id="feedback" aria-live="polite" hidden>
+          <div class="feedback__heading">
+            <span class="feedback__icon" id="feedback-icon" aria-hidden="true"></span>
+            <strong id="feedback-title"></strong>
+          </div>
+          <p id="correct-answer"></p>
+          <div class="explanation" id="explanation" hidden>
+            <span>Giải thích thêm</span>
+            <p id="explanation-text"></p>
+          </div>
+          <button class="primary-button" id="next-button" type="button">Câu tiếp theo</button>
+        </div>
+      </section>
+
+      <section class="results-panel" id="results-panel" aria-labelledby="results-title" hidden>
+        <p class="results-kicker">Hoàn thành lượt học</p>
+        <h1 id="results-title">Kết quả của bạn</h1>
+        <div class="result-score">
+          <strong id="result-percent">0%</strong>
+          <span id="result-copy">0 / 0 câu đúng</span>
+        </div>
+        <div class="result-bar" aria-hidden="true">
+          <div id="result-correct-bar"></div>
+          <div id="result-wrong-bar"></div>
+        </div>
+        <div class="result-actions">
+          <button class="primary-button" id="retry-wrong-button" type="button">
+            Luyện lại câu sai
+          </button>
+          <button class="secondary-button" id="retry-all-button" type="button">
+            Học lại từ đầu
+          </button>
+        </div>
+      </section>
+
+      <p class="data-note" id="data-note"></p>
+    </main>
+  </body>
+</html>
