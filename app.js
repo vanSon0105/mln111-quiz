@@ -104,14 +104,19 @@ function normalizeSavedState(saved, includeResumeState = true) {
   // Migrate mistake sessions saved by the previous version, whose counters started at zero.
   if (!hasRoundCounters && normalized.sessionType === "mistakes" && resumeState) {
     normalized.correct = resumeState.correct + normalized.roundCorrect;
-    normalized.wrong = resumeState.wrong + normalized.roundWrong;
     normalized.streak =
       normalized.roundCorrect + normalized.roundWrong > 0
         ? normalized.streak
         : resumeState.streak;
     resumeState.correct = normalized.correct;
-    resumeState.wrong = normalized.wrong;
     resumeState.streak = normalized.streak;
+  }
+
+  if (normalized.sessionType === "mistakes" && resumeState) {
+    normalized.wrong = resumeState.wrongIds.length;
+    resumeState.wrong = normalized.wrong;
+  } else {
+    normalized.wrong = normalized.wrongIds.length;
   }
 
   return normalized;
@@ -280,10 +285,11 @@ function checkAnswer() {
   state.answered = true;
   if (isCorrect) {
     state.correct += 1;
+    if (state.sessionType === "mistakes") state.wrong = Math.max(0, state.wrong - 1);
     state.roundCorrect += 1;
     state.streak += 1;
   } else {
-    state.wrong += 1;
+    if (state.sessionType !== "mistakes") state.wrong += 1;
     state.roundWrong += 1;
     state.streak = 0;
     if (!state.wrongIds.includes(question.id)) state.wrongIds.push(question.id);
