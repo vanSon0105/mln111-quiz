@@ -104,7 +104,7 @@
       </section>
 
       <section class="results-panel" id="results-panel" aria-labelledby="results-title" hidden>
-        <p class="results-kicker">Hoàn thành lượt học</p>
+        <p class="results-kicker" id="results-kicker">Hoàn thành lượt học</p>
         <h1 id="results-title">Kết quả của bạn</h1>
         <div class="result-score">
           <strong id="result-percent">0%</strong>
@@ -115,6 +115,9 @@
           <div id="result-wrong-bar"></div>
         </div>
         <div class="result-actions">
+          <button class="primary-button" id="resume-session-button" type="button" hidden>
+            Tiếp tục lượt trước
+          </button>
           <button class="primary-button" id="retry-wrong-button" type="button">
             Luyện lại câu sai
           </button>

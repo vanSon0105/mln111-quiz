@@ -29,10 +29,12 @@ const elements = {
   streakCount: document.querySelector("#streak-count"),
   studyMistakesButton: document.querySelector("#study-mistakes-button"),
   mistakesButtonCount: document.querySelector("#mistakes-button-count"),
+  resultsKicker: document.querySelector("#results-kicker"),
   resultPercent: document.querySelector("#result-percent"),
   resultCopy: document.querySelector("#result-copy"),
   resultCorrectBar: document.querySelector("#result-correct-bar"),
   resultWrongBar: document.querySelector("#result-wrong-bar"),
+  resumeSessionButton: document.querySelector("#resume-session-button"),
   retryWrongButton: document.querySelector("#retry-wrong-button"),
   retryAllButton: document.querySelector("#retry-all-button"),
   dataNote: document.querySelector("#data-note"),
@@ -75,6 +77,8 @@ function createFreshState(mode = "shuffle", sourceIds = questions.map((question)
     streak: 0,
     wrongIds: [],
     finished: false,
+    sessionType: "main",
+    resumeState: null,
   };
 }
 
@@ -253,6 +257,13 @@ function checkAnswer() {
     if (!state.wrongIds.includes(question.id)) state.wrongIds.push(question.id);
   }
 
+  if (state.sessionType === "mistakes" && state.resumeState) {
+    const unresolvedIds = new Set(state.resumeState.wrongIds || []);
+    if (isCorrect) unresolvedIds.delete(question.id);
+    else unresolvedIds.add(question.id);
+    state.resumeState.wrongIds = [...unresolvedIds];
+  }
+
   saveState();
   renderQuestion();
   elements.feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -286,6 +297,13 @@ function finishQuiz() {
   elements.resultCopy.textContent = `${state.correct} / ${total} câu đúng`;
   elements.resultCorrectBar.style.width = `${percent}%`;
   elements.resultWrongBar.style.width = `${100 - percent}%`;
+  const canResume =
+    state.sessionType === "mistakes" && state.resumeState && !state.resumeState.finished;
+  elements.resultsKicker.textContent =
+    state.sessionType === "mistakes"
+      ? "Hoàn thành lượt luyện câu sai"
+      : "Hoàn thành lượt học";
+  elements.resumeSessionButton.hidden = !canResume;
   elements.retryWrongButton.hidden = state.wrongIds.length === 0;
   renderStatus();
 }
@@ -309,13 +327,37 @@ function confirmRestart(mode = elements.orderMode.value) {
 
 function startWrongPractice() {
   if (state.wrongIds.length === 0) return;
-  restart("shuffle", [...state.wrongIds]);
+  const wrongIds = [...state.wrongIds];
+  const resumeState =
+    state.sessionType === "mistakes" && state.resumeState
+      ? state.resumeState
+      : JSON.parse(JSON.stringify(state));
+
+  state = {
+    ...createFreshState("shuffle", wrongIds),
+    sessionType: "mistakes",
+    resumeState,
+  };
+  elements.orderMode.value = "shuffle";
+  saveState();
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function resumePreviousSession() {
+  if (!state.resumeState) return;
+  state = state.resumeState;
+  elements.orderMode.value = state.mode === "sequential" ? "sequential" : "shuffle";
+  saveState();
+  state.finished ? finishQuiz() : renderQuestion();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 elements.checkButton.addEventListener("click", checkAnswer);
 elements.nextButton.addEventListener("click", nextQuestion);
 elements.restartButton.addEventListener("click", () => confirmRestart());
 elements.retryAllButton.addEventListener("click", () => restart(elements.orderMode.value));
+elements.resumeSessionButton.addEventListener("click", resumePreviousSession);
 elements.studyMistakesButton.addEventListener("click", startWrongPractice);
 elements.retryWrongButton.addEventListener("click", startWrongPractice);
 elements.orderMode.addEventListener("change", (event) => {
