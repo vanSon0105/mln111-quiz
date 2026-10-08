@@ -36,7 +36,6 @@ const elements = {
   resultWrongBar: document.querySelector("#result-wrong-bar"),
   resumeSessionButton: document.querySelector("#resume-session-button"),
   retryWrongButton: document.querySelector("#retry-wrong-button"),
-  retryAllButton: document.querySelector("#retry-all-button"),
   dataNote: document.querySelector("#data-note"),
 };
 
@@ -400,7 +399,6 @@ function resumePreviousSession() {
 elements.checkButton.addEventListener("click", checkAnswer);
 elements.nextButton.addEventListener("click", nextQuestion);
 elements.restartButton.addEventListener("click", () => confirmRestart());
-elements.retryAllButton.addEventListener("click", () => restart(elements.orderMode.value));
 elements.resumeSessionButton.addEventListener("click", resumePreviousSession);
 elements.studyMistakesButton.addEventListener("click", startWrongPractice);
 elements.retryWrongButton.addEventListener("click", startWrongPractice);
