@@ -410,7 +410,19 @@ elements.orderMode.addEventListener("change", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.altKey || event.ctrlKey || event.metaKey || event.target.matches("select, button")) return;
+  if (event.altKey || event.ctrlKey || event.metaKey) return;
+
+  if (
+    (event.code === "Space" || event.key === " ") &&
+    state.answered &&
+    !event.target.matches("select, input, textarea")
+  ) {
+    event.preventDefault();
+    nextQuestion();
+    return;
+  }
+
+  if (event.target.matches("select, button, input, textarea")) return;
 
   if (event.key === "Enter") {
     if (state.answered) nextQuestion();
