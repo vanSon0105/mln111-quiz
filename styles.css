@@ -195,6 +195,7 @@ a:focus-visible {
 
 .scoreboard {
   display: flex;
+  align-items: center;
   gap: 28px;
   margin-top: 16px;
 }
@@ -220,6 +221,37 @@ a:focus-visible {
 
 .score-item:nth-child(2) strong {
   color: var(--wrong);
+}
+
+.mistakes-button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 7px 10px;
+  color: var(--wrong);
+  background: #ffffff;
+  border: 1px solid var(--wrong-line);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.mistakes-button:hover {
+  background: var(--wrong-bg);
+}
+
+.mistakes-button span {
+  min-width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: var(--wrong);
+  border-radius: 4px;
+  font-size: 0.8rem;
 }
 
 .quiz-panel,
@@ -550,13 +582,21 @@ a:focus-visible {
   }
 
   .scoreboard {
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
   }
 
   .score-item {
     display: grid;
     gap: 2px;
+  }
+
+  .mistakes-button {
+    width: 100%;
+    justify-content: center;
+    grid-column: 1 / -1;
+    margin-left: 0;
   }
 
   .quiz-panel,

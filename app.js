@@ -27,6 +27,8 @@ const elements = {
   correctCount: document.querySelector("#correct-count"),
   wrongCount: document.querySelector("#wrong-count"),
   streakCount: document.querySelector("#streak-count"),
+  studyMistakesButton: document.querySelector("#study-mistakes-button"),
+  mistakesButtonCount: document.querySelector("#mistakes-button-count"),
   resultPercent: document.querySelector("#result-percent"),
   resultCopy: document.querySelector("#result-copy"),
   resultCorrectBar: document.querySelector("#result-correct-bar"),
@@ -134,6 +136,8 @@ function renderStatus() {
   elements.correctCount.textContent = state.correct;
   elements.wrongCount.textContent = state.wrong;
   elements.streakCount.textContent = state.streak;
+  elements.studyMistakesButton.hidden = state.wrongIds.length === 0;
+  elements.mistakesButtonCount.textContent = state.wrongIds.length;
 }
 
 function renderOption(question, option) {
@@ -303,14 +307,17 @@ function confirmRestart(mode = elements.orderMode.value) {
   return false;
 }
 
+function startWrongPractice() {
+  if (state.wrongIds.length === 0) return;
+  restart("shuffle", [...state.wrongIds]);
+}
+
 elements.checkButton.addEventListener("click", checkAnswer);
 elements.nextButton.addEventListener("click", nextQuestion);
 elements.restartButton.addEventListener("click", () => confirmRestart());
 elements.retryAllButton.addEventListener("click", () => restart(elements.orderMode.value));
-elements.retryWrongButton.addEventListener("click", () => {
-  const wrongIds = [...state.wrongIds];
-  restart("shuffle", wrongIds);
-});
+elements.studyMistakesButton.addEventListener("click", startWrongPractice);
+elements.retryWrongButton.addEventListener("click", startWrongPractice);
 elements.orderMode.addEventListener("change", (event) => {
   const previousMode = state.mode === "sequential" ? "sequential" : "shuffle";
   if (!confirmRestart(event.target.value)) event.target.value = previousMode;
