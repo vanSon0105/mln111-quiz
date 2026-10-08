@@ -1,6 +1,6 @@
 # MLN111 Quiz
 
-Ứng dụng ôn tập 597 câu hỏi Triết học Mác - Lênin, viết bằng HTML, CSS và JavaScript thuần.
+Ứng dụng ôn tập 598 câu hỏi Triết học Mác - Lênin, viết bằng HTML, CSS và JavaScript thuần.
 
 ## Chạy ứng dụng
 

@@ -1,6 +1,6 @@
 const questions = Array.isArray(window.QUIZ_QUESTIONS) ? window.QUIZ_QUESTIONS : [];
 const questionById = new Map(questions.map((question) => [question.id, question]));
-const storageKey = "mln111-quiz-progress-v1";
+const storageKey = "mln111-quiz-progress-v2";
 
 const elements = {
   studyStatus: document.querySelector(".study-status"),

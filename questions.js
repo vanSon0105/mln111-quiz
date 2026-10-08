@@ -4404,6 +4404,32 @@ window.QUIZ_QUESTIONS = [
     "explanation": ""
   },
   {
+    "id": 172,
+    "question": "Một sinh viên chuẩn bị bài thuyết trình trong một tháng theo cách thức: Tuần đầu phác thảo đề cương và hàng ngày dành 30 phút sửa chữa bổ sung hoàn thiện.Vào buổi thuyết trình sinh viên đã có một bản thảo hoàn chỉnh. Công việc trên đã diễn ra theo quy luật, nguyên lý nào?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Quy luật mâu thuẫn"
+      },
+      {
+        "id": "B",
+        "text": "Quy luật lượng - chất"
+      },
+      {
+        "id": "C",
+        "text": "Quy luật phủ định của phủ định"
+      },
+      {
+        "id": "D",
+        "text": "Nguyên lý về mối liên hệ phổ biến"
+      }
+    ],
+    "answer": [
+      "B"
+    ],
+    "explanation": ""
+  },
+  {
     "id": 173,
     "question": "Đặc trưng chủ yếu của cách mạng xã hội là gì?",
     "options": [
