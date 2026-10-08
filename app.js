@@ -75,11 +75,46 @@ function createFreshState(mode = "shuffle", sourceIds = questions.map((question)
     correct: 0,
     wrong: 0,
     streak: 0,
+    roundCorrect: 0,
+    roundWrong: 0,
     wrongIds: [],
     finished: false,
     sessionType: "main",
     resumeState: null,
   };
+}
+
+function normalizeSavedState(saved, includeResumeState = true) {
+  const hasRoundCounters =
+    Number.isInteger(saved.roundCorrect) && Number.isInteger(saved.roundWrong);
+  const resumeState =
+    includeResumeState && saved.resumeState
+      ? normalizeSavedState(saved.resumeState, false)
+      : null;
+  const normalized = {
+    ...createFreshState(saved.mode),
+    ...saved,
+    selected: Array.isArray(saved.selected) ? saved.selected : [],
+    wrongIds: Array.isArray(saved.wrongIds) ? saved.wrongIds : [],
+    roundCorrect: hasRoundCounters ? saved.roundCorrect : Number(saved.correct) || 0,
+    roundWrong: hasRoundCounters ? saved.roundWrong : Number(saved.wrong) || 0,
+    resumeState,
+  };
+
+  // Migrate mistake sessions saved by the previous version, whose counters started at zero.
+  if (!hasRoundCounters && normalized.sessionType === "mistakes" && resumeState) {
+    normalized.correct = resumeState.correct + normalized.roundCorrect;
+    normalized.wrong = resumeState.wrong + normalized.roundWrong;
+    normalized.streak =
+      normalized.roundCorrect + normalized.roundWrong > 0
+        ? normalized.streak
+        : resumeState.streak;
+    resumeState.correct = normalized.correct;
+    resumeState.wrong = normalized.wrong;
+    resumeState.streak = normalized.streak;
+  }
+
+  return normalized;
 }
 
 function loadState() {
@@ -91,12 +126,7 @@ function loadState() {
       saved.order.every((id) => questionById.has(id));
 
     if (validOrder && Number.isInteger(saved.index) && saved.index >= 0) {
-      return {
-        ...createFreshState(saved.mode),
-        ...saved,
-        selected: Array.isArray(saved.selected) ? saved.selected : [],
-        wrongIds: Array.isArray(saved.wrongIds) ? saved.wrongIds : [],
-      };
+      return normalizeSavedState(saved);
     }
   } catch {}
 
@@ -250,9 +280,11 @@ function checkAnswer() {
   state.answered = true;
   if (isCorrect) {
     state.correct += 1;
+    state.roundCorrect += 1;
     state.streak += 1;
   } else {
     state.wrong += 1;
+    state.roundWrong += 1;
     state.streak = 0;
     if (!state.wrongIds.includes(question.id)) state.wrongIds.push(question.id);
   }
@@ -262,6 +294,9 @@ function checkAnswer() {
     if (isCorrect) unresolvedIds.delete(question.id);
     else unresolvedIds.add(question.id);
     state.resumeState.wrongIds = [...unresolvedIds];
+    state.resumeState.correct = state.correct;
+    state.resumeState.wrong = state.wrong;
+    state.resumeState.streak = state.streak;
   }
 
   saveState();
@@ -290,11 +325,11 @@ function finishQuiz() {
   saveState();
 
   const total = state.order.length;
-  const percent = total ? Math.round((state.correct / total) * 100) : 0;
+  const percent = total ? Math.round((state.roundCorrect / total) * 100) : 0;
   elements.quizPanel.hidden = true;
   elements.resultsPanel.hidden = false;
   elements.resultPercent.textContent = `${percent}%`;
-  elements.resultCopy.textContent = `${state.correct} / ${total} câu đúng`;
+  elements.resultCopy.textContent = `${state.roundCorrect} / ${total} câu đúng`;
   elements.resultCorrectBar.style.width = `${percent}%`;
   elements.resultWrongBar.style.width = `${100 - percent}%`;
   const canResume =
@@ -335,6 +370,9 @@ function startWrongPractice() {
 
   state = {
     ...createFreshState("shuffle", wrongIds),
+    correct: resumeState.correct,
+    wrong: resumeState.wrong,
+    streak: resumeState.streak,
     sessionType: "mistakes",
     resumeState,
   };
